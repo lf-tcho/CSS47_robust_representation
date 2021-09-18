@@ -13,4 +13,4 @@ Pytorch Implementation of ROCL . Based on the paper:
 - [ ] Commit RELIC loss file : In progress
 
 ### Paper Notes
-- [ROCL](https://www.notion.so/ICLR-CSS-Robust-Self-supervised-Learning-8e0853e04da74efdb3de27735184d932)
+- [ROCL](https://dramatic-durian-120.notion.site/ICLR-CSS-Robust-Self-supervised-Learning-8e0853e04da74efdb3de27735184d932)
