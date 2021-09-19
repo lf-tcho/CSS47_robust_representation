@@ -7,10 +7,10 @@ Pytorch Implementation of ROCL . Based on the paper:
 
 ### To-DO
 - [x] Write the ROCL implementation
-- [x] Write the RELIC loss implementation.(having trouble with the invariant regularizer term)
-- [ ] Train and check if  ROCL code eproduces the result: In progres
+- [x] Write the RELIC loss implementation
+- [ ] Train and check if  ROCL code eproduces the result: In progress 
 - [ ] Check RELIC loss with different architectures 
-- [ ] Commit RELIC loss file : In progress
+- [x] Commit RELIC loss file
 
 ### Paper Notes
 - [ROCL](https://dramatic-durian-120.notion.site/ICLR-CSS-Robust-Self-supervised-Learning-8e0853e04da74efdb3de27735184d932)
