@@ -5,7 +5,7 @@ import torch.distributed as dist
 def pairwise_similarity(outputs,tau):
     #the pairwise similarity should actually be 
     bs=outputs.shape[0]
-    outputs_norm=outputs/(outputs.norm(dim=1).view(bs,1)+1e-5)
+    outputs_norm=outputs/(outputs.norm(dim=1).view(bs,1)+1e-8)
     similarity_matrix=(1./tau)*torch.mm(outputs_norm,outputs_norm.transpose(0,1).detach())#(bs,bs)
     return (similarity_matrix,outputs)
 

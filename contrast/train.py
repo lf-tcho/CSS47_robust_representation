@@ -14,20 +14,18 @@ from torchlars import LARS
 from warmup_scheduler import GradualWarmupScheduler
 
 
-seed=42
-torch.manual_seed(seed)
-torch.backends.cudnn.benchmark=True
-device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print(device)
 
+torch.backends.cudnn.benchmark=True
+torch.cuda.set_device(0)
+device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+n_epochs=200
 dataset_type="cifar-10"
 train_type="contrastive"
 bs=256
 color_jitter_strength=0.5
 train_loader,train_dataset,test_loader,test_dataset,train_sampler=dataloader.get_dataset(dataset_type,train_type,bs,color_jitter_strength)
-print(len(train_dataset))
-print(len(test_dataset))
-
+# for bi,(image,t1_x,t2_x,label) in train_loader:
+#     print(image.shape)
 
 
 if dataset_type == "cifar-10":
@@ -66,7 +64,7 @@ model_params+=projector.parameters()
 base_optimizer=torch.optim.SGD(model_params,lr=0.1,momentum=0.9, weight_decay=1e-6)
 optimizer=LARS(optimizer=base_optimizer,eps=1e-8, trust_coef=0.001)
 
-scheduler_cosine=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,1000)
+scheduler_cosine=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,n_epochs)
 scheduler_warmup=GradualWarmupScheduler(optimizer,multiplier=15.0,total_epoch=10,after_scheduler=scheduler_cosine)
 
 
@@ -90,13 +88,13 @@ def train(epoch):
         advinputs,adv_loss=rep.perturb_and_loss(image=t1_x,target=attack_target,optimizer=optimizer,weight=256,random_start=True)
         reg_loss+=adv_loss.data
 
-        inputs=torch.cat((t1_x,t2_x))
+        inputs=torch.cat((t1_x,t2_x,advinputs))
         outputs=model(inputs)
         outputs=projector(outputs)
 
         similarity,gathered_ops=pairwise_similarity(outputs,tau=0.5)
         simloss=contrastive_loss(similarity,device)
-        loss=simloss
+        loss=simloss+adv_loss
         
         optimizer.zero_grad()
         loss.backward()
@@ -106,9 +104,9 @@ def train(epoch):
         optimizer.step()
         progress_bar(batch_idx, len(train_loader),
         'Loss: %.3f | SimLoss: %.3f | Adv: %.2f'
-        % (total_loss / (batch_idx + 1), reg_simloss / (batch_idx + 1), reg_loss / (batch_idx + 1)))
+        % (total_loss/(batch_idx+1), reg_simloss/(batch_idx+1), reg_loss/(batch_idx+1)))
 
-    return (total_loss/batch_idx,reg_simloss)
+    return (total_loss/batch_idx,reg_simloss/batch_idx)
 
 def test(epoch,train_loss):
     model=model.eval()
@@ -125,8 +123,9 @@ def test(epoch,train_loss):
         checkpoint(projector, train_loss, epoch, args, optimizer, save_name_add=('_projector_epoch_' + str(epoch)))
 
 
-for epoch in range(0,5):
+for epoch in range(0,n_epochs):
     train_loss,reg_loss=train(epoch)
+test(epoch,train_loss)
         
 
 

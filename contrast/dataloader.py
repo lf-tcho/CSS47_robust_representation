@@ -51,9 +51,9 @@ def get_dataset(dataset_type,train_type,bs,color_jitter_strength):
         else:
             assert('wrong learning type')
         
-        train_dst   = CIFAR10(root='./Data', train=True, download=True,
+        train_dst   = CIFAR10(root='/vinai/sskar/Data', train=True, download=True,
                                         transform=transform_train,contrastive_learning=learning_type)
-        val_dst     = CIFAR10(root='./Data', train=False, download=True,
+        val_dst     = CIFAR10(root='/vinai/sskar/Data', train=False, download=True,
                                        transform=transform_test,contrastive_learning=learning_type)
 
         if learning_type=='contrastive':
@@ -124,9 +124,9 @@ def get_dataset(dataset_type,train_type,bs,color_jitter_strength):
         else:
             assert('wrong learning type')
     
-        train_dst   = CIFAR100(root='./Data', train=True, download=True,
+        train_dst   = CIFAR100(root='/vinai/sskar/Data', train=True, download=True,
                                         transform=transform_train,contrastive_learning=learning_type)
-        val_dst     = CIFAR100(root='./Data', train=False, download=True,
+        val_dst     = CIFAR100(root='/vinai/sskar/Data', train=False, download=True,
                                        transform=transform_test,contrastive_learning=learning_type)
 
         if learning_type=='contrastive':

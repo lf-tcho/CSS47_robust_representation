@@ -57,7 +57,7 @@ class rep_adv(object):
         optimizer.zero_grad()
 
         if self.regularize == "original":
-            inputs=torch.cat((x,original_image))
+            inputs=torch.cat((x,image))
         else:
             inputs=torch.cat((x,target))
         output=self.model(inputs)
