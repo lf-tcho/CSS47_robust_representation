@@ -106,6 +106,10 @@ def train(epoch):
         'Loss: %.3f | SimLoss: %.3f | Adv: %.2f'
         % (total_loss/(batch_idx+1), reg_simloss/(batch_idx+1), reg_loss/(batch_idx+1)))
 
+        if (epoch+1)%10 == 0 :
+            checkpoint(model,total_loss/(batch_idx+1),epoch,optimizer)
+            checkpoint(projector,total_loss/(batch_idx+1),epoch,optimizer,save_name_add='_projector')
+
     return (total_loss/batch_idx,reg_simloss/batch_idx)
 
 def test(epoch,train_loss):
@@ -126,7 +130,4 @@ def test(epoch,train_loss):
 for epoch in range(0,n_epochs):
     train_loss,reg_loss=train(epoch)
 test(epoch,train_loss)
-        
-
-
 
