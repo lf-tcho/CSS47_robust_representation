@@ -12,5 +12,8 @@ Pytorch Implementation of ROCL . Based on the paper:
 - [ ] Check RELIC loss with different architectures 
 - [x] Commit RELIC loss file
 
+###  Help Needed
+- [] Write a training script for training relic loss
+
 ### Paper Notes
 - [ROCL](https://dramatic-durian-120.notion.site/ICLR-CSS-Robust-Self-supervised-Learning-8e0853e04da74efdb3de27735184d932)
