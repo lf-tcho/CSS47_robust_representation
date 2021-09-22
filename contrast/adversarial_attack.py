@@ -8,6 +8,49 @@ def project(x,original,epsilon,type="linf"):
     x=torch.max(torch.min(x,max_x),min_x)
     return (x)
 
+
+class fsgm(object):
+    def __init__(self,model,projector,epsilon,alpha,min_val,max_val,max_iters,device,type_="linf"):
+        self.model=model
+        self.projector=projector
+        self.epsilon=epsilon
+        self.alpha=alpha
+        self.min_val=min_val
+        self.max_val=max_val
+        self.max_iters=max_iters
+        self.device=device
+        self.type=type_
+    
+    def perturb(self,image,labels,loss,random_start=True):
+        if random_start == True:
+            delta=torch.FloatTensor(image.shape).uniform_(-self.epsilon,self.epsilon).float().to(self.device)
+            x=image.float().clone()+delta
+            x=torch.clamp(x,self.min_val,self.max_val)
+        else:
+            x=image.clone()
+        x.requires_grad=True
+        self.model.eval()
+        self.projector.eval()
+        bs=x.shape[0]
+
+        with torch.enable_grad():
+            for i in range(self.max_iters):
+                self.model.zero_grad()
+                self.projector.zero_grad()
+
+                outputs=self.projector(self.model(x))
+                loss=F.cross_entropy(outputs,labels,reduction="mean")
+                grad_outputs=None
+                grads=torch.autograd.grad(loss,x,grad_outputs=grad_outputs, only_inputs=True, retain_graph=False)[0]
+
+                grads_sign=torch.sign(grads)
+                
+                x.data+=self.alpha * (grads_sign)
+                x=torch.clamp(x,self.min_val,self.max_val)
+                x=project(x,image,self.epsilon,self.type)
+        return (x.detach())
+
+
 class rep_adv(object):
     def __init__(self,model,projector,epsilon,alpha,min_val,max_val,max_iters,device,type_="linf",loss_type="sim",regularize="original"):
         self.model=model
@@ -49,7 +92,7 @@ class rep_adv(object):
                 grad_signs=torch.sign(grads.data)
 
                 x.data+=self.alpha*(grad_signs)# equation 5 from paper t(x)^{i+1}
-                x=torch.clamp(x,self.max_val,self.min_val)
+                x=torch.clamp(x,self.min_val,self.max_val)
                 x=project(x,image,self.epsilon,self.type)
         
         self.model.train()
