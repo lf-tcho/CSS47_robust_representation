@@ -22,8 +22,8 @@ Pytorch Implementation of ROCL . Based on the paper:
 | Official           |    83.71 %      |     40.27%     |
 | Ours               |    71.91 %      |     20.21%     |
 
-## I only trained for 200 epochs instead of 1000 in the paper.
-## Please run python train.py and resume training from the 200th epoch. 
+I only trained for 200 epochs instead of 1000 in the paper.
+Please run python train.py and resume training from the 200th epoch. 
 
 ### Paper Notes
 - [ROCL](https://dramatic-durian-120.notion.site/ICLR-CSS-Robust-Self-supervised-Learning-8e0853e04da74efdb3de27735184d932)
