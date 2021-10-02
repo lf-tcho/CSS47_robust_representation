@@ -20,8 +20,8 @@ from warmup_scheduler import GradualWarmupScheduler
 torch.backends.cudnn.benchmark=True
 torch.cuda.set_device(0)
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_load_path="/vinai/sskar/CSS47_robust_representation/contrast/checkpoint/ckpt.t7sample_42"
-n_epochs=200
+model_load_path="/home/ubuntu/CSS/CSS47_robust_representation/contrast/checkpoint/ckpt.t7sample_42"
+n_epochs=350
 dataset_type="cifar-10"
 train_type="contrastive"
 bs=256
@@ -115,7 +115,7 @@ def train(epoch):
 
     return (total_loss/batch_idx,reg_simloss/batch_idx)
 
-checkpoint_=torch.load("/vinai/sskar/CSS47_robust_representation/contrast/checkpoint/ckpt.t7sample_42")
+checkpoint_=torch.load("/home/ubuntu/CSS/CSS47_robust_representation/contrast/checkpoint/ckpt.t7sample_42")
 new_state_dict=OrderedDict()
 module=False
 for k,v in checkpoint_['model'].items():
@@ -125,17 +125,19 @@ model.load_state_dict(new_state_dict)
 
 
 def test(epoch,train_loss):
+    global model
+    global projector
     model=model.eval()
     projector=projector.eval()
 
     # Save at the last epoch #       
-    if epoch == args.epoch - 1 :
-        checkpoint(model,train_loss,epoch,args,optimizer)
+    if epoch == n_epochs - 1:#args.epoch - 1 :
+        checkpoint(model,train_loss,epoch,optimizer)
         checkpoint(projector,train_loss,epoch,optimizer,save_name_add='_projector')
        
     # Save at every 100 epoch #
     elif epoch % 100 == 0:
-        checkpoint(model,train_loss,epoch,args,optimizer,save_name_add='_epoch_'+str(epoch))
+        checkpoint(model,train_loss,epoch,optimizer,save_name_add='_epoch_'+str(epoch))
         checkpoint(projector,train_loss,epoch,optimizer, save_name_add=('_projector_epoch_' + str(epoch)))
 
 

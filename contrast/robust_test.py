@@ -16,7 +16,7 @@ lr=0.2
 torch.backends.cudnn.benchmark=True
 torch.cuda.set_device(0)
 device=torch.device("cuda")
-model_load_path="/vinai/sskar/CSS47_robust_representation/contrast/checkpoint/ckpt.t7sample_42"
+model_load_path="/home/ubuntu/CSS/CSS47_robust_representation/contrast/checkpoint/ckpt.t7sample_42"
 n_epochs=200
 
 dataset_type="cifar-10"
