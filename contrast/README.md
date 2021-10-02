@@ -20,7 +20,8 @@ Pytorch Implementation of ROCL . Based on the paper:
 | Model name         |    Accuracy     |   robustness   |
 | ------------------ |---------------- | -------------- |
 | Official           |    83.71 %      |     40.27%     |
-| Ours               |    78.11 %      |     30.21%     |
+| Ours - 200 epochs  |    78.11 %      |     30.21%     |
+| Ours - 350 epochs  |    85.45 %      |     34.55%     |
 
 I only trained for 200 epochs instead of 1000 in the paper.
 Please run python train.py and resume training from the 200th epoch. 
